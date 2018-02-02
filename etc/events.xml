@@ -1,0 +1,28 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <!--event for customer registering on frontend-->
+    <event name="customer_register_success">
+        <observer name="customer_register_observer" instance="Logeecom\CleverReach\Observer\CustomerRegisterObserver"/>
+    </event>
+
+    <!--event for customer registering on backend-->
+    <event name="adminhtml_customer_save_after">
+        <observer name="customer_register_observer" instance="Logeecom\CleverReach\Observer\CustomerRegisterObserver"/>
+    </event>
+
+    <!--event for creating an order-->
+    <event name="sales_order_save_after">
+        <observer name="order_success_obesrver" instance="Logeecom\CleverReach\Observer\OrderSuccessObserver" />
+    </event>
+
+    <!--event for changing subscription status-->
+    <event name="newsletter_subscriber_save_after">
+        <observer name="newsletter_subscriber" instance="Logeecom\CleverReach\Observer\CustomerSubscribeObserver" />
+    </event>
+
+    <!--event for product view by customer-->
+    <event name="catalog_controller_product_view">
+        <observer name="product_view" instance="Logeecom\CleverReach\Observer\ProductViewObserver" />
+    </event>
+</config>

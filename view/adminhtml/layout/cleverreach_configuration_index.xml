@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2017 CleverReach. All rights reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+    <head>
+        <link src="Logeecom_CleverReach::js/cleverreach.js"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Logeecom\CleverReach\Block\Adminhtml\Config" name="adminhtml.cleverreach.configurations"
+                   template="Logeecom_CleverReach::content.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

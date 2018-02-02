@@ -1,0 +1,245 @@
+<?php
+/**
+ * If this flag is true, configuration page is in tab mode, otherwise is in wizard mode
+ */
+$isConnected = $block->isConnected();
+
+/**
+ * Base URL of system
+ */
+$baseUrl = $block->getAdminUrl();
+
+/**
+ * Reset URL
+ */
+$resetUrl = $block->getResetUrl();
+
+/**
+ * Auth URL
+ */
+$authUrl = $block->getAuthUrl();
+
+/**
+ * Path to CleverReach logo
+ */
+$logoUrl = $block->getViewFileUrl('Logeecom_CleverReach::images/cr.png');
+
+/**
+ * Path to CleverReach User Manual
+ */
+$userManualUrl = $block->getViewFileUrl('Logeecom_CleverReach::pdf/UserManual.pdf');
+
+/**
+ * Error message and code if access token is not valid
+ */
+$errorMessageAndCode = $block->getMessageAndCode();
+
+/**
+ * Gets System mappings as key-value array. Example:
+ * [
+ *   1 => 'Not logged',
+ *   2 => 'Retailer'
+ *   ...
+ * ]
+ */
+$mappings = $block->getMappings();
+?>
+<?php if ($isConnected) : ?>
+    <div id="dialog-overlay"></div>
+    <div id="dialog-box">
+        <div>
+            <div id="dialog-box-head"><?php echo $block->escapeHtml(__('Please confirm this action')) ?></div>
+            <div id="dialog-box-body"><?php echo $block->escapeHtml(__('Are you sure you want to reset configurations?')) ?></div>
+            <div id="dialog-box-foot"></div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<input type="hidden" id="base_url" value="<?php echo $block->escapeQuote($baseUrl) ?>">
+<input type="hidden" id="reset_url" value="<?php echo $block->escapeQuote($resetUrl) ?>">
+<input type="hidden" id="authorize_url" value="<?php echo $block->escapeQuote($authUrl); ?>">
+<input type="hidden" id="batch_size_message" value="<?php echo $block->escapeQuote(__('Batch size must be between 50 and 250')) ?>">
+<input type="hidden" id="empty_fields_message" value="<?php echo $block->escapeQuote(__('All fields must be filled')) ?>">
+<input type="hidden" id="none_label" value="<?php echo $block->escapeQuote(__('None')) ?>">
+<input type="hidden" id="next_label" value="<?php echo $block->escapeQuote(__('Next')) ?>">
+<input type="hidden" id="start_import_label" value="<?php echo $block->escapeQuote(__('Start import')) ?>">
+<input type="hidden" id="customers_imported_message" value="<?php echo $block->escapeQuote(__('Customers imported successfully')) ?>">
+<input type="hidden" id="yes" value="<?php echo $block->escapeQuote(__('Yes')) ?>">
+<input type="hidden" id="no" value="<?php echo $block->escapeQuote(__('No')) ?>">
+
+<img class="cr-logo" src="<?php echo $block->escapeQuote($logoUrl); ?>"/>
+
+<div class="cr-loader">
+    <span id="load-loader" class="load-loader"></span>
+</div>
+
+<div class="cr-content">
+<ul class="tab">
+    <li id="configuration_tab">
+        <div class="tab-links <?php echo $isConnected ? 'tab-mode' : '' ?>" data-tab="configurations">
+            <?php if (!$isConnected) : ?>
+                <span class="cr-badge">1</span>
+                <span class="chevron"></span>
+            <?php endif; ?>
+
+            <?php echo $block->escapeHtml(__('Configurations')) ?>
+        </div>
+    </li>
+    <li id="mappings_tab">
+        <div class="tab-links <?php echo $isConnected ? 'tab-mode' : 'disabled' ?>" data-tab="mappings">
+            <?php if (!$isConnected) : ?>
+                <span class="cr-badge">2</span>
+                <span class="chevron"></span>
+            <?php endif; ?>
+
+            <?php echo $block->escapeHtml(__('Customer Groups')) ?>
+        </div>
+    </li>
+    <li id="import_tab">
+        <div class="tab-links <?php echo $isConnected ? 'tab-mode' : 'disabled' ?>" data-tab="import">
+            <?php if (!$isConnected) : ?>
+                <span class="cr-badge">3</span>
+                <span class="chevron"></span>
+            <?php endif; ?>
+
+            <?php echo $block->escapeHtml(__('Import')) ?>
+        </div>
+    </li>
+</ul>
+<?php if ($errorMessageAndCode['responseCode'] >= 400 && $errorMessageAndCode['responseCode'] < 500 &&
+    !empty($errorMessageAndCode['errorMessage'])) : ?>
+<div class="cr-message" id="error-message-block" style="display: block">
+    <p><strong><?php echo $block->escapeHtml(__('Error: ' . $errorMessageAndCode['errorMessage'] . ' - Please connect again.')) ?></strong></p>
+    <p id="error-message"></p>
+</div>
+<?php else : ?>
+<div class="cr-message" id="error-message-block">
+    <p><strong><?php echo $block->escapeHtml(__('Error')) ?></strong></p>
+    <p id="error-message"></p>
+</div>
+<?php endif; ?>
+<div class="cr-message" id="success-message-block">
+    <p><strong><?php echo $block->escapeHtml(__('Success')) ?></strong></p>
+    <p id="success-message"></p>
+</div>
+
+<div class="cr-container" id="configurations">
+    <div class="tab-content">
+        <a href="<?php echo $block->escapeUrl($userManualUrl) ?>" target="_blank" class="cr-button" id="user-manual"><?php echo $block->escapeHtml(__('User Manual')) ?></a>
+        <h2><?php echo $block->escapeHtml(__('Configurations')) ?></h2>
+        <p><?php echo $block->escapeHtml(__('In order to connect with CleverReach, please click on Connect button and login to your CleverReach account or the follow instructions in')) ?> <a href="<?php echo $block->escapeUrl($userManualUrl) ?>" target="_blank"><?php echo $block->escapeHtml(__('user manual')) ?></a>.</p>
+        <p class="title"><?php echo $block->escapeHtml(__('Connection')) ?></p>
+        <div>
+            <?php if (!$isConnected) : ?>
+            <button type="button" class="cr-button" id="connect">
+                <span id="connect-loader" class="loader"></span> <?php echo $block->escapeHtml(__('Connect')) ?>
+            </button>
+            <?php endif; ?>
+
+            <span class="cr-status"><?php echo $block->escapeHtml(__('Status')) ?>:</span>
+            <span class="cr-connected"><?php echo $block->escapeHtml(__('Connected')) ?></span>
+            <span class="cr-connecting"><?php echo $block->escapeHtml(__('Connecting')) ?>...</span>
+            <span class="cr-disconnected"><?php echo $block->escapeHtml(__('Disconnected')) ?></span>
+        </div>
+
+        <p class="title"><?php echo $block->escapeHtml(__('Global')) ?></p>
+        <div class="config">
+            <label for="search"><?php echo $block->escapeHtml(__('Product search: ')) ?></label>
+            <select id="search" size="1">
+                <option value="1"><?php echo $block->escapeHtml(__('Enabled')) ?></option>
+                <option value="0"><?php echo $block->escapeHtml(__('Disabled')) ?></option>
+            </select>
+            <span class="help-icon"><span><?php echo $block->escapeHtml(__('If product search is enabled, shop products can be searched from CleverReach')) ?></span></span>
+            <br/>
+            <label for="debug"><?php echo $block->escapeHtml(__('Debug mode: ')) ?></label>
+            <select id="debug" size="1">
+                <option value="1"><?php echo $block->escapeHtml(__('Enabled')) ?></option>
+                <option value="0"><?php echo $block->escapeHtml(__('Disabled')) ?></option>
+            </select>
+            <span class="help-icon"><span><?php echo $block->escapeHtml(__('If debug mode is enabled, system logs user actions')) ?></span></span>
+            <br/>
+        </div>
+
+        <?php if ($isConnected) : ?>
+            <button class="cr-button" id="reset"><?php echo $block->escapeHtml(__('Reset to default')) ?></button>
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="cr-container" id="mappings">
+    <div class="tab-content">
+        <h2><?php echo $block->escapeHtml(__('Customer Groups')) ?></h2>
+        <p><?php echo $block->escapeHtml(__('Map your shop customer groups to CleverReach subscriber lists and choose a opt-in form')) ?>.</p>
+        <?php
+        if (!empty($mappings)) :
+            ?>
+            <table>
+                <thead>
+                <tr>
+                    <th><?php echo $block->escapeHtml(__('Magento Customer Group')) ?></th>
+                    <th><?php echo $block->escapeHtml(__('CleverReach Group')) ?></th>
+                    <th><?php echo $block->escapeHtml(__('Opt-in Form')) ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($mappings as $key => $mapping) :
+                    ?>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="group_ids" value="<?php echo $block->escapeQuote($key) ?>">
+                            <label name="mappings"><?php echo $block->escapeHtml($mapping) ?></label>
+                        </td>
+                        <td>
+                            <select name="groups" id="cr_<?php echo $block->escapeQuote($key) ?>"></select>
+                        </td>
+                        <td>
+                            <select name="forms" id="form_<?php echo $block->escapeHtml($key) ?>"></select>
+                        </td>
+                    </tr>
+                    <?php
+                endforeach;
+                ?>
+                </tbody>
+            </table>
+            <?php
+        else :
+            ?>
+            <h4><?php echo $block->escapeHtml(__('Currently there are no mappings available')); ?></h4>
+            <?php
+        endif;
+        ?>
+    </div>
+</div>
+
+<div class="cr-container" id="import">
+    <div class="tab-content">
+        <h2><?php echo $block->escapeHtml(__('Import')) ?></h2>
+        <label for="batch" class="left-columns"><?php echo $block->escapeHtml(__('Batch size')) ?>: </label>
+        <input type="text" id="batch" name="batch" value="100"/>
+        <span class="help-icon"><span><?php echo $block->escapeHtml(__('Number of customers imported to CleverReach per one request. Must be between 50 and 250. If you don\'t know what is this leave default value.')) ?></span></span>
+        <br/>
+        <div id="progress" class="graph">
+            <div id="bar"><p id="text">0%</p></div>
+        </div>
+        <?php if ($isConnected) : ?>
+            <button type="button" class="cr-button" id="start">
+                <span id="import-loader" class="loader"></span>
+                <?php echo $block->escapeHtml(__('Start import')) ?>
+            </button>
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="cr-nav-buttons">
+    <?php if (!$isConnected) : ?>
+        <button type="button" class="cr-button disabled" id="prev"><?php echo $block->escapeHtml(__('Previous')) ?></button>
+        <button type="button" class="cr-button disabled" id="next"><?php echo $block->escapeHtml(__('Next')) ?></button>
+    <?php else : ?>
+        <button type="button" class="cr-button" id="save">
+            <span id="save-loader" class="loader"></span>
+            <?php echo $block->escapeHtml(__('Save')) ?>
+        </button>
+    <?php endif; ?>
+</div>
+</div>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <referenceContainer name="header.container" remove="true"/>
+    <referenceContainer name="navigation.sections" remove="true"/>
+    <referenceContainer name="footer" remove="true"/>
+    <referenceContainer name="copyright" remove="true"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Logeecom\CleverReach\Block\Callback" name="cleverreach.oauth.callback" template="Logeecom_CleverReach::callback.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
+
