@@ -1,5 +1,5 @@
 {
-  "name": "clever/magento2",
+  "name": "mindtwo/magento2-cleverreach",
   "description": "CleverReach® extension offers synchronization of your newsletter subscribers and customers with CleverReach® subscription groups.",
   "type": "magento2-module",
   "version": "1.1.1",
