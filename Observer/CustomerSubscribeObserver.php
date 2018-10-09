@@ -161,6 +161,10 @@ class CustomerSubscribeObserver implements ObserverInterface
 
             $groupMappings = json_decode($this->config->getGroupMappings(), true);
 
+            if($customer->isEmpty()){
+                $customer->setGroupId(0);
+            }
+
             if (!isset($groupMappings[$customer->getGroupId()])) {
                 return;
             }
